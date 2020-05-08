@@ -18,6 +18,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var deleteButton: UIBarButtonItem!
     @IBOutlet weak var collectionView: UICollectionView!
     private let refreshControl = UIRefreshControl()
+    private var searchController: UISearchController!
     
     var viewModel: HomeViewModel!
     
@@ -31,11 +32,18 @@ class HomeViewController: UIViewController {
     
     private func configureUI() {
         configureCollectionView()
+        configureSearchController()
         configureDataSource()
     }
     
     func configureCollectionView() {
         collectionView.refreshControl = refreshControl
+    }
+    
+    fileprivate func configureSearchController() {
+        searchController = UISearchController(searchResultsController: nil)
+        searchController.definesPresentationContext = true
+        navigationItem.searchController = searchController
     }
     
     func configureDataSource() {
@@ -56,10 +64,12 @@ class HomeViewController: UIViewController {
                                             .filter { $0 }
                                             .map { _ in Void() }
                                             .eraseToAnyPublisher(),
+                                        keywordTrigger: searchController.searchBar.searchTextField.textPublisher,
                                         deleteTrigger: deleteButton.tapPublisher)
         let output = viewModel.transform(input: input)
         
         output.title.assign(to: \.title, on: navigationItem).store(in: &cancellable)
+        output.searchBarPlaceHolder.assign(to: \.placeholder, on: searchController.searchBar.searchTextField).store(in: &cancellable)
         
         // MARK: - Using Diffable Data Sources
         output.items
@@ -106,6 +116,9 @@ class HomeViewController: UIViewController {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
 
+    deinit {
+        print("Homevc deinit")
+    }
 
 }
 

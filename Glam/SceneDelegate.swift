@@ -23,6 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.viewModel = HomeViewModel()
         let navigationController = UINavigationController(rootViewController: homeViewController)
+        navigationController.navigationBar.prefersLargeTitles = true
         window.rootViewController = navigationController
         self.window = window
         window.makeKeyAndVisible()
