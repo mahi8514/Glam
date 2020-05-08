@@ -20,6 +20,7 @@ class HomeViewModel: ObservableObject {
     }
     
     struct Output {
+        let title: CurrentValueSubject<String?, Never>
         let items: PassthroughSubject<[CDCategory], Never>
         let loadingCompleteEvent: AnyPublisher<Void, Never>
     }
@@ -28,6 +29,7 @@ class HomeViewModel: ObservableObject {
     
     func transform(input: Input) -> Output {
         
+        let title = CurrentValueSubject<String?, Never>("Home")
         let elements = PassthroughSubject<[CDCategory], Never>()
         let loadComplete = PassthroughSubject<Void, Never>()
         
@@ -56,7 +58,7 @@ class HomeViewModel: ObservableObject {
         
         input.deleteTrigger.sink { Database.shared.delete(lastOnly: true) }.store(in: &cancellable)
         
-        return Output(items: elements, loadingCompleteEvent: loadComplete.eraseToAnyPublisher())
+        return Output(title: title, items: elements, loadingCompleteEvent: loadComplete.eraseToAnyPublisher())
         
     }
     

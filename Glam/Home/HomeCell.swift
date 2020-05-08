@@ -19,7 +19,7 @@ class HomeCell: UICollectionViewCell {
     var category: CDCategory! {
         didSet {
             titleLabel.text = category.name
-            imageView.kf.setImage(with: URL(string: self.category.image!)!)
+            if let imageUrl = category.image { imageView.kf.setImage(with: URL(string: imageUrl)) }
         }
     }
     

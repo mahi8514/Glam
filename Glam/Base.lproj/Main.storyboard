@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Home-->
+        <!--Home View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController storyboardIdentifier="HomeViewController" id="BYZ-38-t0r" customClass="HomeViewController" customModule="Glam" customModuleProvider="target" sceneMemberID="viewController">
@@ -98,7 +98,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Home" id="9kP-BF-2jX">
+                    <navigationItem key="navigationItem" id="9kP-BF-2jX">
                         <barButtonItem key="rightBarButtonItem" systemItem="trash" id="8rD-iF-90Q"/>
                     </navigationItem>
                     <connections>

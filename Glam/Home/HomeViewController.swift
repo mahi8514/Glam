@@ -59,6 +59,8 @@ class HomeViewController: UIViewController {
                                         deleteTrigger: deleteButton.tapPublisher)
         let output = viewModel.transform(input: input)
         
+        output.title.assign(to: \.title, on: navigationItem).store(in: &cancellable)
+        
         // MARK: - Using Diffable Data Sources
         output.items
             .receive(on: DispatchQueue.main)
