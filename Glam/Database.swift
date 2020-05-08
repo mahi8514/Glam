@@ -16,6 +16,7 @@ class Database {
     static let shared: Database = Database()
     let managedContext: NSManagedObjectContext
     let appDelegate: AppDelegate
+    
     private init() {
         appDelegate = UIApplication.shared.delegate as! AppDelegate
         managedContext = appDelegate.persistentContainer.viewContext
