@@ -1,0 +1,43 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CombineCocoa",
+        "repositoryURL": "https://github.com/CombineCommunity/CombineCocoa.git",
+        "state": {
+          "branch": null,
+          "revision": "c31c85b6f8494247b69997324312dce8bf55b34b",
+          "version": "0.1.0"
+        }
+      },
+      {
+        "package": "CombineDataSources",
+        "repositoryURL": "https://github.com/combineopensource/CombineDataSources",
+        "state": {
+          "branch": null,
+          "revision": "362795e0336f2c1637036f692a3b5d05806302b4",
+          "version": "0.2.5"
+        }
+      },
+      {
+        "package": "CombineExt",
+        "repositoryURL": "https://github.com/CombineCommunity/CombineExt.git",
+        "state": {
+          "branch": null,
+          "revision": "7ed4677e33fdc963af404423cb563e133c271d2b",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "package": "Kingfisher",
+        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
+        "state": {
+          "branch": null,
+          "revision": "349ed06467a6f8a4939bcb83db301542bc84eac9",
+          "version": "5.13.4"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
