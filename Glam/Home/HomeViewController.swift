@@ -36,17 +36,18 @@ class HomeViewController: UIViewController {
         configureDataSource()
     }
     
-    func configureCollectionView() {
+    private func configureCollectionView() {
         collectionView.refreshControl = refreshControl
+        collectionView.collectionViewLayout = createLayout()
     }
     
-    fileprivate func configureSearchController() {
+    private func configureSearchController() {
         searchController = UISearchController(searchResultsController: nil)
         searchController.definesPresentationContext = true
         navigationItem.searchController = searchController
     }
     
-    func configureDataSource() {
+    private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Int, CDCategory>(collectionView: collectionView) {
             (collectionView, indexPath, model) -> UICollectionViewCell? in
 
@@ -56,6 +57,24 @@ class HomeViewController: UIViewController {
             cell.category = model
             return cell
         }
+    }
+    
+    private func createLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                             heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .fractionalWidth(0.5))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        let spacing = CGFloat(10)
+        group.interItemSpacing = .fixed(spacing)
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = spacing
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+
+        return UICollectionViewCompositionalLayout(section: section)
     }
     
     private func bindViewModel() {
@@ -109,7 +128,7 @@ class HomeViewController: UIViewController {
             .store(in: &cancellable)
     }
     
-    func applySnapShot(with items: [CDCategory], animated: Bool) {
+    private func applySnapShot(with items: [CDCategory], animated: Bool) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, CDCategory>()
         snapshot.appendSections([0])
         snapshot.appendItems(items)
@@ -120,12 +139,4 @@ class HomeViewController: UIViewController {
         print("Homevc deinit")
     }
 
-}
-
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let itemSize = (collectionView.frame.width - (collectionView.contentInset.left + collectionView.contentInset.right + 30)) / 2
-      return CGSize(width: itemSize, height: itemSize + 10)
-    }
 }
