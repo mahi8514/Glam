@@ -40,7 +40,7 @@ class HomeViewModel: ObservableObject {
             .store(in: &cancellable)
         
         Publishers.Merge(input.trigger, input.pullToRefreshTrigger)
-            .filter { try! Reachability().connection != .unavailable }
+            .filter { try! Reachability().isConnected }
             .setFailureType(to: GlamAPIError.self)
             .flatMapLatest { self.getCategories() }
             .sink(receiveCompletion: { completion in
