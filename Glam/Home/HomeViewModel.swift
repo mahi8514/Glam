@@ -43,7 +43,7 @@ class HomeViewModel: ObservableObject {
             .setFailureType(to: Error.self)
             .flatMapLatest { [weak self] _, keyword -> AnyPublisher<Array<CDCategory>, Error> in
                 guard let self = self else { return AnyPublisher { $0(.failure(GlamDBError.dataError)) } }
-                return CDPublisher(request: self.setPredicateRequest(searchText: keyword),
+                return CDPublisher(request: self.getPredicateRequest(searchText: keyword),
                                    context: self.database.managedContext)
                     .eraseToAnyPublisher()
             }
@@ -83,7 +83,7 @@ class HomeViewModel: ObservableObject {
         
     }
     
-    private func setPredicateRequest(searchText: String? = nil) -> NSFetchRequest<CDCategory> {
+    private func getPredicateRequest(searchText: String? = nil) -> NSFetchRequest<CDCategory> {
         let request = database.fetchRequest()
         if let text = searchText, !text.isEmpty {
             request.predicate = NSPredicate(format: "name contains[c] %@", text)
