@@ -31,11 +31,7 @@ class Database {
             category.image = $0.image
             category.path = $0.path
         }
-        do {
-            try managedContext.save()
-        } catch {
-            print(error.localizedDescription)
-        }
+        save()
     }
     
     func delete(lastOnly: Bool = false) {
@@ -45,10 +41,14 @@ class Database {
         } else {
             fetchedResults.forEach { managedContext.delete($0) }
         }
-        
-        do {
-            try managedContext.save()
-        } catch { print(error.localizedDescription) }
+        save()
+    }
+    
+    private func save() {
+        if managedContext.hasChanges {
+            do { try managedContext.save() }
+            catch { print(error.localizedDescription) }
+        }
     }
     
     func fetchRequest(isAscending: Bool = true) -> NSFetchRequest<CDCategory> {

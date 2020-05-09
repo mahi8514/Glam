@@ -42,7 +42,7 @@ class HomeViewModel: ObservableObject {
         Publishers.CombineLatest(input.trigger, keyword)
             .setFailureType(to: Error.self)
             .flatMapLatest { [weak self] _, keyword -> AnyPublisher<Array<CDCategory>, Error> in
-                guard let self = self else { return AnyPublisher { $0(.failure(GlamDBError.dataError)) } }
+                guard let self = self else { return AnyPublisher { $0(.failure(GlamCombineError.memoryError)) } }
                 return CDPublisher(request: self.getPredicateRequest(searchText: keyword),
                                    context: self.database.managedContext)
                     .eraseToAnyPublisher()
@@ -95,9 +95,16 @@ class HomeViewModel: ObservableObject {
     
     func getCategories() -> Future<Result<[Category], GlamAPIError>, GlamAPIError> {
         return Future<Result<[Category], GlamAPIError>, GlamAPIError> { promise in
-            let url = URL(string: "https://pastebin.com/raw/HpSAiSBf")!
+            guard let url = URL(string: "https://pastebin.com/raw/HpSAiSBf") else {
+                return promise(.failure(.urlError(URLError(URLError.unsupportedURL))))
+            }
             URLSession.shared.dataTaskPublisher(for: url)
-                .map { $0.data }
+                .tryMap { (data, response) -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+                        throw GlamAPIError.responseError((response as? HTTPURLResponse)?.statusCode ?? 500)
+                    }
+                    return data
+                }
                 .decode(type: ResponseObject<Category>.self, decoder: JSONDecoder())
                 .receive(on: RunLoop.main)
                 .sink(receiveCompletion: { completion in
@@ -150,6 +157,16 @@ enum GlamDBError: Error, LocalizedError {
     var localizedDescription: String {
         switch self {
         case .dataError: return "Data has error or no data found."
+        }
+    }
+}
+
+enum GlamCombineError: Error, LocalizedError {
+    case memoryError
+    
+    var localizedDescription: String {
+        switch self {
+        case .memoryError: return "Is out of scope....!"
         }
     }
 }
