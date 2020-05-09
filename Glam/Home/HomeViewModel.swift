@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import CombineExt
 import CoreData
+import Moya
 
 class HomeViewModel: ObservableObject {
     
@@ -95,15 +96,17 @@ class HomeViewModel: ObservableObject {
     
     func getCategories() -> Future<Result<[Category], GlamAPIError>, GlamAPIError> {
         return Future<Result<[Category], GlamAPIError>, GlamAPIError> { promise in
-            guard let url = URL(string: "https://pastebin.com/raw/HpSAiSBf") else {
-                return promise(.failure(.urlError(URLError(URLError.unsupportedURL))))
-            }
-            URLSession.shared.dataTaskPublisher(for: url)
-                .tryMap { (data, response) -> Data in
-                    guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
-                        throw GlamAPIError.responseError((response as? HTTPURLResponse)?.statusCode ?? 500)
+//            guard let url = URL(string: "https://pastebin.com/raw/HpSAiSBf") else {
+//                return promise(.failure(.urlError(URLError(URLError.unsupportedURL))))
+//            }
+                
+            //URLSession.shared.dataTaskPublisher(for: url)
+            MoyaProvider<GlamService>().requestPublisher(.categories)
+                .tryMap { dataResponse -> Data in
+                    guard let httpResponse = dataResponse.response, 200...299 ~= httpResponse.statusCode else {
+                        throw GlamAPIError.responseError(dataResponse.response?.statusCode ?? 500)
                     }
-                    return data
+                    return dataResponse.data
                 }
                 .decode(type: ResponseObject<Category>.self, decoder: JSONDecoder())
                 .receive(on: RunLoop.main)
@@ -120,7 +123,8 @@ class HomeViewModel: ObservableObject {
                           promise(.failure(.genericError))
                         }
                     }
-                }) { promise(.success($0.success ? .success($0.data) : .failure(.noDataFound))) }
+                }) {
+                    promise(.success($0.success ? .success($0.data) : .failure(.noDataFound))) }
                 .store(in: &self.cancellable)
             
         }
