@@ -30,6 +30,7 @@ class HomeViewModel: ObservableObject {
     
     private var cancellable = Set<AnyCancellable>()
     let database = Database.shared
+    let glamProvider = MoyaProvider<GlamService>()
     
     func transform(input: Input) -> Output {
         
@@ -43,16 +44,16 @@ class HomeViewModel: ObservableObject {
         Publishers.CombineLatest(input.trigger, keyword)
             .setFailureType(to: Error.self)
             .flatMapLatest { [weak self] _, keyword -> AnyPublisher<Array<CDCategory>, Error> in
-                guard let self = self else { return AnyPublisher { $0(.failure(GlamCombineError.memoryError)) } }
+                guard let self = self else { return AnyPublisher { $0(.failure(GlamAPIError.genericError)) } }
                 return CDPublisher(request: self.getPredicateRequest(searchText: keyword),
                                    context: self.database.managedContext)
                     .eraseToAnyPublisher()
-            }
-            .sink(receiveCompletion: { _ in
-                print("Completed fetch")
-            }) { elements.send($0) }
+        }
+        .sink(receiveCompletion: { _ in
+            print("Completed fetch")
+        }) { elements.send($0) }
             .store(in: &cancellable)
-            
+        
         
         Publishers.Merge(input.trigger, input.pullToRefreshTrigger)
             .filter { try! Reachability().isConnected }
@@ -60,20 +61,20 @@ class HomeViewModel: ObservableObject {
             .flatMapLatest { [weak self] () -> Future<Result<[Category], GlamAPIError>, GlamAPIError> in
                 guard let self = self else { return Future { $0(.failure(.genericError)) } }
                 return self.getCategories()
+        }
+        .sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure(let error): print(error.localizedDescription)
+            case .finished: print("Finished")
             }
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error): print(error.localizedDescription)
-                case .finished: print("Finished")
-                }
-            }) {
-                loadComplete.send(())
-                switch $0 {
-                case .success(let categories): Database.shared.save(categories: categories)
-                case .failure(let error): print(error.localizedDescription)
-                }
+        }) {
+            loadComplete.send(())
+            switch $0 {
+            case .success(let categories): Database.shared.save(categories: categories)
+            case .failure(let error): print(error.localizedDescription)
             }
-            .store(in: &cancellable)
+        }
+        .store(in: &cancellable)
         
         input.deleteTrigger.sink { Database.shared.delete(lastOnly: true) }.store(in: &cancellable)
         
@@ -96,35 +97,30 @@ class HomeViewModel: ObservableObject {
     
     func getCategories() -> Future<Result<[Category], GlamAPIError>, GlamAPIError> {
         return Future<Result<[Category], GlamAPIError>, GlamAPIError> { promise in
-//            guard let url = URL(string: "https://pastebin.com/raw/HpSAiSBf") else {
-//                return promise(.failure(.urlError(URLError(URLError.unsupportedURL))))
-//            }
-                
-            //URLSession.shared.dataTaskPublisher(for: url)
-            MoyaProvider<GlamService>().requestPublisher(.categories)
+            self.glamProvider.requestPublisher(.categories)
                 .tryMap { dataResponse -> Data in
                     guard let httpResponse = dataResponse.response, 200...299 ~= httpResponse.statusCode else {
                         throw GlamAPIError.responseError(dataResponse.response?.statusCode ?? 500)
                     }
                     return dataResponse.data
-                }
-                .decode(type: ResponseObject<Category>.self, decoder: JSONDecoder())
-                .receive(on: RunLoop.main)
-                .sink(receiveCompletion: { completion in
-                    if case let .failure(error) = completion {
-                        switch error {
-                        case let urlError as URLError:
-                          promise(.failure(.urlError(urlError)))
-                        case let decodingError as DecodingError:
-                          promise(.failure(.decodingError(decodingError)))
-                        case let apiError as GlamAPIError:
-                          promise(.failure(apiError))
-                        default:
-                          promise(.failure(.genericError))
-                        }
+            }
+            .decode(type: ResponseObject<Category>.self, decoder: JSONDecoder())
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { completion in
+                if case let .failure(error) = completion {
+                    switch error {
+                    case let urlError as URLError:
+                        promise(.failure(.urlError(urlError)))
+                    case let decodingError as DecodingError:
+                        promise(.failure(.decodingError(decodingError)))
+                    case let apiError as GlamAPIError:
+                        promise(.failure(apiError))
+                    default:
+                        promise(.failure(.genericError))
                     }
-                }) {
-                    promise(.success($0.success ? .success($0.data) : .failure(.noDataFound))) }
+                }
+            }) {
+                promise(.success($0.success ? .success($0.data) : .failure(.noDataFound))) }
                 .store(in: &self.cancellable)
             
         }
@@ -134,43 +130,4 @@ class HomeViewModel: ObservableObject {
         print("Homevm deinit")
     }
     
-}
-
-
-enum GlamAPIError: Error, LocalizedError {
-    case urlError(URLError)
-    case responseError(Int)
-    case decodingError(DecodingError)
-    case genericError
-    case noDataFound
-    
-    var localizedDescription: String {
-        switch self {
-        case .urlError(let error): return error.localizedDescription
-        case .decodingError(let error): return error.localizedDescription
-        case .responseError(let status): return "Bad response code: \(status)"
-        case .genericError: return "An unknown error has been occured"
-        case .noDataFound: return "No data found in this url"
-        }
-    }
-}
-
-enum GlamDBError: Error, LocalizedError {
-    case dataError
-    
-    var localizedDescription: String {
-        switch self {
-        case .dataError: return "Data has error or no data found."
-        }
-    }
-}
-
-enum GlamCombineError: Error, LocalizedError {
-    case memoryError
-    
-    var localizedDescription: String {
-        switch self {
-        case .memoryError: return "Is out of scope....!"
-        }
-    }
 }

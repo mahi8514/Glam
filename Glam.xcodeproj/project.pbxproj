@@ -21,6 +21,9 @@
 		14586CBB24672F770044C4A2 /* ReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14586CBA24672F770044C4A2 /* ReachabilityManager.swift */; };
 		14586CBE246736060044C4A2 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 14586CBD246736060044C4A2 /* Moya */; };
 		14586CC1246736720044C4A2 /* GlamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14586CC0246736720044C4A2 /* GlamService.swift */; };
+		1479628D2468067500D10037 /* AnyPublisher+Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1479628C2468067500D10037 /* AnyPublisher+Response.swift */; };
+		1479628F246806DE00D10037 /* MoyaProvider+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1479628E246806DE00D10037 /* MoyaProvider+Combine.swift */; };
+		147962912468071B00D10037 /* MoyaPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147962902468071B00D10037 /* MoyaPublisher.swift */; };
 		148CE9C22464F655008EA3E1 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148CE9C12464F655008EA3E1 /* Extension.swift */; };
 		14CF7BBF246433B200F9BC20 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CF7BBE246433B100F9BC20 /* Reachability.swift */; };
 		14D3B0CB246496A5001626CF /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D3B0CA246496A5001626CF /* Database.swift */; };
@@ -42,6 +45,9 @@
 		1418A1322458A1D100721805 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		14586CBA24672F770044C4A2 /* ReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		14586CC0246736720044C4A2 /* GlamService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlamService.swift; sourceTree = "<group>"; };
+		1479628C2468067500D10037 /* AnyPublisher+Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyPublisher+Response.swift"; sourceTree = "<group>"; };
+		1479628E246806DE00D10037 /* MoyaProvider+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaProvider+Combine.swift"; sourceTree = "<group>"; };
+		147962902468071B00D10037 /* MoyaPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaPublisher.swift; sourceTree = "<group>"; };
 		148CE9C12464F655008EA3E1 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		14CF7BBE246433B100F9BC20 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		14D3B0CA246496A5001626CF /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
@@ -122,10 +128,21 @@
 		14586CBF2467365F0044C4A2 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				1479628B2468065700D10037 /* Moya */,
 				14586CB924672F5D0044C4A2 /* Reachability */,
 				14586CC0246736720044C4A2 /* GlamService.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		1479628B2468065700D10037 /* Moya */ = {
+			isa = PBXGroup;
+			children = (
+				1479628C2468067500D10037 /* AnyPublisher+Response.swift */,
+				1479628E246806DE00D10037 /* MoyaProvider+Combine.swift */,
+				147962902468071B00D10037 /* MoyaPublisher.swift */,
+			);
+			path = Moya;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,11 +232,14 @@
 			files = (
 				14D3B0D22464B250001626CF /* Model.swift in Sources */,
 				14586CBB24672F770044C4A2 /* ReachabilityManager.swift in Sources */,
+				1479628D2468067500D10037 /* AnyPublisher+Response.swift in Sources */,
 				14D3B0CB246496A5001626CF /* Database.swift in Sources */,
 				1418A11F2458A18900721805 /* HomeViewController.swift in Sources */,
 				14D3B0D02464B223001626CF /* HomeCell.swift in Sources */,
+				1479628F246806DE00D10037 /* MoyaProvider+Combine.swift in Sources */,
 				1418A11B2458A18900721805 /* AppDelegate.swift in Sources */,
 				148CE9C22464F655008EA3E1 /* Extension.swift in Sources */,
+				147962912468071B00D10037 /* MoyaPublisher.swift in Sources */,
 				14CF7BBF246433B200F9BC20 /* Reachability.swift in Sources */,
 				1418A1252458A18900721805 /* Glam.xcdatamodeld in Sources */,
 				1418A1332458A1D100721805 /* HomeViewModel.swift in Sources */,
