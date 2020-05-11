@@ -39,7 +39,9 @@ class HomeViewModel: ObservableObject {
         let elements = PassthroughSubject<[CDCategory], Never>()
         let loadComplete = PassthroughSubject<Void, Never>()
         
-        let keyword = input.keywordTrigger.throttle(for: .milliseconds(300), scheduler: DispatchQueue.main, latest: true)
+        let keyword = input.keywordTrigger
+            .throttle(for: .milliseconds(300), scheduler: DispatchQueue.main, latest: true)
+            .removeDuplicates()
         
         Publishers.CombineLatest(input.trigger, keyword)
             .setFailureType(to: Error.self)
