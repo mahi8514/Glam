@@ -48,7 +48,7 @@ class HomeCell: UICollectionViewCell {
         request.allowsConstrainedNetworkAccess = false
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryCatch { error -> URLSession.DataTaskPublisher in
-                guard error.networkUnavailableReason! == .constrained else { throw error }
+                guard error.networkUnavailableReason == .constrained else { throw error }
                 return URLSession.shared.dataTaskPublisher(for: lowDataURL)
             }
             .tryMap { data, response -> Data in
