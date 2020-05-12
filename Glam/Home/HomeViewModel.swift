@@ -98,6 +98,8 @@ class HomeViewModel: ObservableObject {
     }
     
     func getCategories() -> Future<Result<[Category], GlamAPIError>, GlamAPIError> {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         return Future<Result<[Category], GlamAPIError>, GlamAPIError> { promise in
             self.glamProvider.requestPublisher(.categories)
                 .tryMap { dataResponse -> Data in
@@ -106,7 +108,7 @@ class HomeViewModel: ObservableObject {
                     }
                     return dataResponse.data
             }
-            .decode(type: ResponseObject<Category>.self, decoder: JSONDecoder())
+            .decode(type: ResponseObject<Category>.self, decoder: decoder)
             .receive(on: RunLoop.main)
             .sink(receiveCompletion: { completion in
                 if case let .failure(error) = completion {

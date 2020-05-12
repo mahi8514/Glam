@@ -16,7 +16,8 @@ struct ResponseObject<T: Decodable>: Decodable {
 struct Category: Decodable, Hashable {
     let id: Int
     let name: String
-    let image: String
+    let highResImage: String
+    let lowResImage: String
     let path: String
 }
 

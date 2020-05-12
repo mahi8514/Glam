@@ -28,7 +28,8 @@ class Database {
             let category = CDCategory(context: appDelegate.persistentContainer.viewContext)
             category.id = Int16($0.id)
             category.name = $0.name
-            category.image = $0.image
+            category.highResImage = $0.highResImage
+            category.lowResImage = $0.lowResImage
             category.path = $0.path
         }
         save()
