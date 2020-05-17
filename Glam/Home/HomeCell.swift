@@ -30,7 +30,7 @@ class HomeCell: UICollectionViewCell {
     
     private func setImageView(with regularImageUrl: String, lowDataImageUrl: String) {
         guard let regularUrl = regularImageUrl.url, let lowDataURL = lowDataImageUrl.url else { return }
-        subscriber = adaptiveLoader(regularURL: regularUrl, lowDataURL: lowDataURL)
+        subscriber = URLSession.shared.adaptiveLoader(regularURL: regularUrl, lowDataURL: lowDataURL)
             .retry(1)
             .map { UIImage(data: $0) }
             .replaceError(with: #imageLiteral(resourceName: "image-placeholder"))
@@ -41,21 +41,6 @@ class HomeCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         subscriber?.cancel()
-    }
-    
-    func adaptiveLoader(regularURL: URL, lowDataURL: URL) -> AnyPublisher<Data, Error> {
-        var request = URLRequest(url: regularURL)
-        request.allowsConstrainedNetworkAccess = false
-        return URLSession.shared.dataTaskPublisher(for: request)
-            .tryCatch { error -> URLSession.DataTaskPublisher in
-                guard error.networkUnavailableReason == .constrained else { throw error }
-                return URLSession.shared.dataTaskPublisher(for: lowDataURL)
-            }
-            .tryMap { data, response -> Data in
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else { throw GlamAPIError.genericError }
-                return data
-            }
-            .eraseToAnyPublisher()
     }
     
 }
