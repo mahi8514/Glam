@@ -8,7 +8,7 @@
 
 import UIKit
 import Combine
-//import Kingfisher
+import Kingfisher
 
 class HomeCell: UICollectionViewCell {
     
@@ -22,9 +22,11 @@ class HomeCell: UICollectionViewCell {
     var category: CDCategory! {
         didSet {
             titleLabel.text = category.name
-            if let regularImageUrl = category.highResImage,
-                let lowDataImageUrl = category.lowResImage { setImageView(with: regularImageUrl, lowDataImageUrl: lowDataImageUrl) }
-            //if let imageUrl = category.image { imageView.kf.setImage(with: imageUrl.url) }
+//            if let regularImageUrl = category.highResImage,
+//                let lowDataImageUrl = category.lowResImage { setImageView(with: regularImageUrl, lowDataImageUrl: lowDataImageUrl) }
+            if let imageUrl = category.highResImage {
+                imageView.kf.setImage(with: imageUrl.url, placeholder: UIImage(named: "image-placeholder"))
+            }
         }
     }
     
@@ -40,6 +42,7 @@ class HomeCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        imageView.image = nil
         subscriber?.cancel()
     }
     
