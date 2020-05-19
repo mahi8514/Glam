@@ -55,20 +55,18 @@ class HomeViewModel: ViewModelType {
         
         Publishers.CombineLatest(input.trigger, keyword)
             .subscribe(on: DispatchQueue.main)
-            .setFailureType(to: Error.self)
-            .flatMapLatest { [weak self] _, keyword -> AnyPublisher<Array<CDCategory>, Error> in
+            .setFailureType(to: GlamAPIError.self)
+            .flatMapLatest { [weak self] _, keyword -> AnyPublisher<Array<CDCategory>, GlamAPIError> in
                 guard let self = self else { return AnyPublisher { $0(.failure(GlamAPIError.genericError)) } }
                 return CDPublisher(request: self.getPredicateRequest(searchText: keyword),
                                    context: self.database.managedContext)
+                    .mapError { _ in GlamAPIError.dbError }
                     .eraseToAnyPublisher()
         }
         .replaceError(with: [])
-        .map {
-            var snapshot = Snapshot()
-            snapshot.appendSections([0])
-            snapshot.appendItems($0)
-            return snapshot
-        }
+        .map { [weak self] in
+            guard let self = self else { return Snapshot() }
+            return self.generateSnapshot(from: $0) }
         .subscribe(snapshot)
         .store(in: &cancellable)
         
@@ -110,6 +108,13 @@ class HomeViewModel: ViewModelType {
             request.predicate = nil
         }
         return request
+    }
+    
+    private func generateSnapshot(from items: [CDCategory]) -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([0])
+        snapshot.appendItems(items)
+        return snapshot
     }
     
     func getCategories() -> Future<Result<[Category], GlamAPIError>, GlamAPIError> {

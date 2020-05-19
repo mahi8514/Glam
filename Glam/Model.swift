@@ -27,6 +27,7 @@ enum GlamAPIError: Error, LocalizedError {
     case decodingError(DecodingError)
     case genericError
     case noDataFound
+    case dbError
     
     var localizedDescription: String {
         switch self {
@@ -35,6 +36,7 @@ enum GlamAPIError: Error, LocalizedError {
         case .responseError(let status): return "Bad response code: \(status)"
         case .genericError: return "An unknown error has been occured"
         case .noDataFound: return "No data found in this url"
+        case .dbError: return "Error while fetching from core data"
         }
     }
 }

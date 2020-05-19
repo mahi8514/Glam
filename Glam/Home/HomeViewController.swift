@@ -10,12 +10,11 @@ import UIKit
 import Combine
 import CombineCocoa
 
-class HomeViewController: UIViewController {
+class HomeViewController: UICollectionViewController {
 
     var dataSource: UICollectionViewDiffableDataSource<Int, CDCategory>! = nil
 
     @IBOutlet weak var deleteButton: UIBarButtonItem!
-    @IBOutlet weak var collectionView: UICollectionView!
     private let refreshControl = UIRefreshControl()
     private var searchController: UISearchController!
     
