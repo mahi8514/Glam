@@ -9,7 +9,6 @@
 import UIKit
 import Combine
 import CombineCocoa
-import CombineDataSources
 
 class HomeViewController: UIViewController {
 
@@ -50,7 +49,6 @@ class HomeViewController: UIViewController {
     private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Int, CDCategory>(collectionView: collectionView) {
             (collectionView, indexPath, model) -> UICollectionViewCell? in
-
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCell.cellIdentifier,
                                                                 for: indexPath)
                 as? HomeCell else { fatalError("Cannot create new cell") }
@@ -91,10 +89,7 @@ class HomeViewController: UIViewController {
         output.searchBarPlaceHolder.assign(to: \.placeholder, on: searchController.searchBar.searchTextField).store(in: &cancellable)
         
         // MARK: - Using Diffable Data Sources
-        output.items
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] categories in self?.applySnapShot(with: categories, animated: true)}
-            .store(in: &cancellable)
+        output.snapshot.receive(on: DispatchQueue.main).apply(to: dataSource).store(in: &cancellable)
         
         /*
         // MARK: - With animation
@@ -126,13 +121,6 @@ class HomeViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.refreshControl.endRefreshing() }
             .store(in: &cancellable)
-    }
-    
-    private func applySnapShot(with items: [CDCategory], animated: Bool) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, CDCategory>()
-        snapshot.appendSections([0])
-        snapshot.appendItems(items)
-        dataSource.apply(snapshot, animatingDifferences: animated)
     }
 
     deinit {

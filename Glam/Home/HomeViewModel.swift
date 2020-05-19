@@ -11,8 +11,16 @@ import Combine
 import CombineExt
 import CoreData
 import Moya
+import UIKit
 
-class HomeViewModel: ObservableObject {
+protocol ViewModelType {
+    associatedtype Input
+    associatedtype Output
+    
+    func transform(input: Input) -> Output
+}
+
+class HomeViewModel: ViewModelType {
     
     struct Input {
         let trigger: AnyPublisher<Void, Never>
@@ -22,9 +30,9 @@ class HomeViewModel: ObservableObject {
     }
     
     struct Output {
-        let title: CurrentValueSubject<String?, Never>
-        let searchBarPlaceHolder: CurrentValueSubject<String?, Never>
-        let items: PassthroughSubject<[CDCategory], Never>
+        let title: AnyPublisher<String?, Never>
+        let searchBarPlaceHolder: AnyPublisher<String?, Never>
+        let snapshot: AnyPublisher<Snapshot, Never>
         let loadingCompleteEvent: AnyPublisher<Void, Never>
     }
     
@@ -32,18 +40,21 @@ class HomeViewModel: ObservableObject {
     let database = Database.shared
     let glamProvider = MoyaProvider<GlamService>()
     
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, CDCategory>
+    
     func transform(input: Input) -> Output {
         
         let title = CurrentValueSubject<String?, Never>("Home")
         let searchBarPlaceHolder = CurrentValueSubject<String?, Never>("Search Categories")
-        let elements = PassthroughSubject<[CDCategory], Never>()
+        let snapshot = PassthroughSubject<Snapshot, Never>()
         let loadComplete = PassthroughSubject<Void, Never>()
         
         let keyword = input.keywordTrigger
-            .throttle(for: .milliseconds(300), scheduler: DispatchQueue.main, latest: true)
+            //.throttle(for: .microseconds(300), scheduler: DispatchQueue.main, latest: true)
             .removeDuplicates()
         
         Publishers.CombineLatest(input.trigger, keyword)
+            .subscribe(on: DispatchQueue.main)
             .setFailureType(to: Error.self)
             .flatMapLatest { [weak self] _, keyword -> AnyPublisher<Array<CDCategory>, Error> in
                 guard let self = self else { return AnyPublisher { $0(.failure(GlamAPIError.genericError)) } }
@@ -51,11 +62,15 @@ class HomeViewModel: ObservableObject {
                                    context: self.database.managedContext)
                     .eraseToAnyPublisher()
         }
-        .sink(receiveCompletion: { _ in
-            print("Completed fetch")
-        }) { elements.send($0) }
-            .store(in: &cancellable)
-        
+        .replaceError(with: [])
+        .map {
+            var snapshot = Snapshot()
+            snapshot.appendSections([0])
+            snapshot.appendItems($0)
+            return snapshot
+        }
+        .subscribe(snapshot)
+        .store(in: &cancellable)
         
         Publishers.Merge(input.trigger, input.pullToRefreshTrigger)
             .filter { try! Reachability().isConnected }
@@ -80,9 +95,9 @@ class HomeViewModel: ObservableObject {
         
         input.deleteTrigger.sink { Database.shared.delete(lastOnly: true) }.store(in: &cancellable)
         
-        return Output(title: title,
-                      searchBarPlaceHolder: searchBarPlaceHolder,
-                      items: elements,
+        return Output(title: title.eraseToAnyPublisher(),
+                      searchBarPlaceHolder: searchBarPlaceHolder.eraseToAnyPublisher(),
+                      snapshot: snapshot.eraseToAnyPublisher(),
                       loadingCompleteEvent: loadComplete.eraseToAnyPublisher())
         
     }
