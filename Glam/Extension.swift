@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Combine
 import Moya
+import Kingfisher
 
 extension Reachability {
     var isConnected: Bool { connection != .unavailable }
@@ -29,12 +30,23 @@ extension URLSession {
             .tryCatch { error -> URLSession.DataTaskPublisher in
                 guard error.networkUnavailableReason == .constrained else { throw error }
                 return URLSession.shared.dataTaskPublisher(for: lowDataURL)
-            }
-            .tryMap { data, response -> Data in
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else { throw GlamAPIError.genericError }
-                return data
-            }
-            .eraseToAnyPublisher()
+        }
+        .tryMap { data, response -> Data in
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else { throw GlamAPIError.genericError }
+            return data
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
+public protocol OptionalType {
+    associatedtype Wrapped
+    var value: Wrapped? { get }
+}
+
+extension Optional: OptionalType {
+    public var value: Wrapped? {
+        return self
     }
 }
 
@@ -48,5 +60,19 @@ extension Publisher {
         sink { snapshot in
             dataSource.apply(snapshot)
         }
+    }
+    
+    func setKfImage<T>(to imageView: T) -> AnyCancellable where T: UIImageView, Output == URL, Failure == Never {
+        sink { imageView.kf.setImage(with: $0, placeholder: UIImage(named: "image-placeholder")) }
+    }
+}
+
+public extension Publisher where Self.Output: OptionalType {
+    func filterNil() -> AnyPublisher<Self.Output.Wrapped, Self.Failure> {
+        return self.flatMap { element -> AnyPublisher<Self.Output.Wrapped, Self.Failure> in
+            guard let value = element.value
+                else { return Empty(completeImmediately: false).setFailureType(to: Self.Failure.self).eraseToAnyPublisher() }
+            return Just(value).setFailureType(to: Self.Failure.self).eraseToAnyPublisher()
+        }.eraseToAnyPublisher()
     }
 }

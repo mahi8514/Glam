@@ -40,7 +40,7 @@ class HomeViewModel: ViewModelType {
     let database = Database.shared
     let glamProvider = MoyaProvider<GlamService>()
     
-    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, CDCategory>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, HomeCellViewModel>
     
     func transform(input: Input) -> Output {
         
@@ -112,8 +112,9 @@ class HomeViewModel: ViewModelType {
     
     private func generateSnapshot(from items: [CDCategory]) -> Snapshot {
         var snapshot = Snapshot()
+        let homeCellViewModels = items.map { HomeCellViewModel(category: $0) }
         snapshot.appendSections([0])
-        snapshot.appendItems(items)
+        snapshot.appendItems(homeCellViewModels)
         return snapshot
     }
     

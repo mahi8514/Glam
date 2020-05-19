@@ -10,11 +10,12 @@ import UIKit
 import Combine
 import CombineCocoa
 
-class HomeViewController: UICollectionViewController {
+class HomeViewController: UIViewController {
 
-    var dataSource: UICollectionViewDiffableDataSource<Int, CDCategory>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<Int, HomeCellViewModel>! = nil
 
     @IBOutlet weak var deleteButton: UIBarButtonItem!
+    @IBOutlet weak var collectionView: UICollectionView!
     private let refreshControl = UIRefreshControl()
     private var searchController: UISearchController!
     
@@ -46,12 +47,12 @@ class HomeViewController: UICollectionViewController {
     }
     
     private func configureDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Int, CDCategory>(collectionView: collectionView) {
+        dataSource = UICollectionViewDiffableDataSource<Int, HomeCellViewModel>(collectionView: collectionView) {
             (collectionView, indexPath, model) -> UICollectionViewCell? in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCell.cellIdentifier,
                                                                 for: indexPath)
                 as? HomeCell else { fatalError("Cannot create new cell") }
-            cell.category = model
+            cell.bind(viewModel: model)
             return cell
         }
     }
