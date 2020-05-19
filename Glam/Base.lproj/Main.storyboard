@@ -3,120 +3,13 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Home View Controller-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <viewController storyboardIdentifier="HomeViewController" id="BYZ-38-t0r" customClass="HomeViewController" customModule="Glam" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Xb1-db-xab">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nQQ-cD-PEW">
-                                    <size key="itemSize" width="128" height="128"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="HomeCell" id="Xwt-rw-6mF" customClass="HomeCell" customModule="Glam" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="180" height="164"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="180" height="164"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="urM-EX-W7b" userLabel="Container View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="180" height="164"/>
-                                                    <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FfA-az-ICa">
-                                                            <rect key="frame" x="0.0" y="0.0" width="180" height="123.5"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <userDefinedRuntimeAttributes>
-                                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                                    <integer key="value" value="8"/>
-                                                                </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                                            </userDefinedRuntimeAttributes>
-                                                        </imageView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Caption" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DHo-vu-xdY">
-                                                            <rect key="frame" x="4" y="133.5" width="172" height="20.5"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                            <color key="textColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                            <variation key="heightClass=regular-widthClass=regular">
-                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
-                                                            </variation>
-                                                        </label>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="trailing" secondItem="DHo-vu-xdY" secondAttribute="trailing" constant="4" id="PT2-Sh-ZNV"/>
-                                                        <constraint firstAttribute="bottom" secondItem="DHo-vu-xdY" secondAttribute="bottom" constant="10" id="WGD-GH-BXk"/>
-                                                        <constraint firstItem="FfA-az-ICa" firstAttribute="top" secondItem="urM-EX-W7b" secondAttribute="top" id="WdB-Dz-d08"/>
-                                                        <constraint firstAttribute="trailing" secondItem="FfA-az-ICa" secondAttribute="trailing" id="hie-qo-zeV"/>
-                                                        <constraint firstItem="DHo-vu-xdY" firstAttribute="top" secondItem="FfA-az-ICa" secondAttribute="bottom" constant="10" id="qbJ-wD-Acp"/>
-                                                        <constraint firstItem="DHo-vu-xdY" firstAttribute="leading" secondItem="urM-EX-W7b" secondAttribute="leading" constant="4" id="s1W-MS-Lk6"/>
-                                                        <constraint firstItem="FfA-az-ICa" firstAttribute="leading" secondItem="urM-EX-W7b" secondAttribute="leading" id="ynZ-kk-dDC"/>
-                                                    </constraints>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                            <real key="value" value="5"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                </view>
-                                            </subviews>
-                                        </view>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstItem="urM-EX-W7b" firstAttribute="top" secondItem="Xwt-rw-6mF" secondAttribute="top" id="0ic-dQ-dW2"/>
-                                            <constraint firstItem="urM-EX-W7b" firstAttribute="leading" secondItem="Xwt-rw-6mF" secondAttribute="leading" id="Vfw-9O-G47"/>
-                                            <constraint firstAttribute="bottom" secondItem="urM-EX-W7b" secondAttribute="bottom" id="rVn-xe-TRj"/>
-                                            <constraint firstAttribute="trailing" secondItem="urM-EX-W7b" secondAttribute="trailing" id="znJ-AU-307"/>
-                                        </constraints>
-                                        <size key="customSize" width="180" height="164"/>
-                                        <connections>
-                                            <outlet property="imageView" destination="FfA-az-ICa" id="2Vs-96-B6c"/>
-                                            <outlet property="titleLabel" destination="DHo-vu-xdY" id="Y6R-Uj-ndH"/>
-                                        </connections>
-                                    </collectionViewCell>
-                                </cells>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="qr7-LO-Zbp"/>
-                                </connections>
-                            </collectionView>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="Xb1-db-xab" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="XHS-Lf-Vig"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Xb1-db-xab" secondAttribute="trailing" id="XOI-bd-L3j"/>
-                            <constraint firstAttribute="bottom" secondItem="Xb1-db-xab" secondAttribute="bottom" id="cyC-TI-VjR"/>
-                            <constraint firstItem="Xb1-db-xab" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="zGn-k4-jam"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="9kP-BF-2jX">
-                        <barButtonItem key="rightBarButtonItem" image="trash" catalog="system" id="8rD-iF-90Q"/>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="collectionView" destination="Xb1-db-xab" id="eQ4-4c-NaW"/>
-                        <outlet property="deleteButton" destination="8rD-iF-90Q" id="kXI-7A-2SR"/>
-                    </connections>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="137.68115942028987" y="133.92857142857142"/>
-        </scene>
-        <!--Collection View Controller-->
         <scene sceneID="I07-6G-5eG">
             <objects>
-                <collectionViewController id="faQ-LB-R61" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="HomeViewController" id="faQ-LB-R61" customClass="HomeViewController" customModule="Glam" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="d5x-F6-xkM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
