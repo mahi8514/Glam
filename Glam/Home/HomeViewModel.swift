@@ -22,6 +22,8 @@ protocol ViewModelType {
 
 class HomeViewModel: ViewModelType {
     
+    let error = PassthroughSubject<Error, Never>()
+    
     struct Input {
         let trigger: AnyPublisher<Void, Never>
         let pullToRefreshTrigger: AnyPublisher<Void, Never>
@@ -43,6 +45,10 @@ class HomeViewModel: ViewModelType {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Int, HomeCellViewModel>
     
     func transform(input: Input) -> Output {
+        
+        error.sink { error in
+            print("Error occured \(error.localizedDescription)")
+        }.store(in: &cancellable)
         
         let title = CurrentValueSubject<String?, Never>("Home")
         let searchBarPlaceHolder = CurrentValueSubject<String?, Never>("Search Categories")
@@ -73,9 +79,9 @@ class HomeViewModel: ViewModelType {
         Publishers.Merge(input.trigger, input.pullToRefreshTrigger)
             .filter { try! Reachability().isConnected }
             .setFailureType(to: GlamAPIError.self)
-            .flatMapLatest { [weak self] () -> Future<Result<[Category], GlamAPIError>, GlamAPIError> in
-                guard let self = self else { return Future { $0(.failure(.genericError)) } }
-                return self.getCategories()
+            .flatMapLatest { [weak self] () -> AnyPublisher<Result<[Category], GlamAPIError>, GlamAPIError> in
+                guard let self = self else { return AnyPublisher { $0(.failure(.genericError)) } }
+                return self.getCategories().trackError(errorss: self.error)
         }
         .sink(receiveCompletion: { completion in
             switch completion {
