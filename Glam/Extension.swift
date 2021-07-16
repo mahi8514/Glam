@@ -76,3 +76,14 @@ public extension Publisher where Self.Output: OptionalType {
         }.eraseToAnyPublisher()
     }
 }
+
+
+public extension Publisher where Failure: Error {
+    func trackError(errorss: PassthroughSubject<Error, Never>) -> AnyPublisher<Output, Failure> {
+        return handleEvents(receiveCompletion: { completion in
+            if case let .failure(error) = completion {
+                errorss.send(error)
+            }
+        }).eraseToAnyPublisher()
+    }
+}
